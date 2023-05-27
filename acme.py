@@ -3,6 +3,7 @@
 """Set and unset ACME DNS records for Google Domains."""
 
 import argparse
+import json
 import logging
 import logging.handlers
 import os
@@ -28,7 +29,7 @@ def set_acme(args):
                  f"timeout: {args.timeout}")
     logger.info(f"SET requested for {{{args.fqdn}, {args.digest}}}")
     response = requests.post(REST_URL,
-                             data={
+                             data=json.dumps({
                                  "accessToken": config.api_key,
                                  "recordsToAdd": [
                                      {
@@ -37,11 +38,10 @@ def set_acme(args):
                                      },
                                  ],
                                  "keepExpiredRecords": False,
-                             },
+                             }),
                              timeout=args.timeout
                              )
-    print(response.text)
-    if args.digest in response.text and response.status_code == 200:
+    if response.status_code == 200:
         logger.info(f"SET successful with {{{args.fqdn}, {args.digest}}}")
     else:
         logger.error(f"SET unsuccessful with {{{args.fqdn}, {args.digest}}}")
@@ -54,7 +54,7 @@ def unset_acme(args):
                  f"digest: {args.digest}")
     logger.info(f"UNSET requested for {{{args.fqdn}, {args.digest}}}")
     response = requests.post(REST_URL,
-                             data={
+                             data=json.dumps({
                                  "accessToken": config.api_key,
                                  "recordsToRemove": [
                                      {
@@ -63,10 +63,9 @@ def unset_acme(args):
                                      },
                                  ],
                                  "keepExpiredRecords": False,
-                             }
+                             })
                              )
-    print(response.text)
-    if args.digest in response.text and response.status_code == 200:
+    if response.status_code == 200:
         logger.info(f"UNSET successful with {{{args.fqdn}, {args.digest}}}")
     else:
         logger.error(f"UNSET unsuccessful with {{{args.fqdn}, {args.digest}}}")
