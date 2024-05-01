@@ -1,3 +1,7 @@
+**Notice:** Google Domains shut down, these scripts are obsolete.
+
+---
+
 Set ACME DNS records for Google Domains.
 
 The acme.py script is used to set ACME DNS records for Google domains
